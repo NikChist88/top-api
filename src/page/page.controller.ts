@@ -1,4 +1,6 @@
-import { FindProductDto } from 'src/product/dto/find-product.dto';
+import { PageModel } from './page.model';
+import { FindPageDto } from './dto/find-page.dto';
+import { ConfigService } from '@nestjs/config';
 import {
   Body,
   Controller,
@@ -9,11 +11,11 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { PageModel } from './page.model';
-import { FindPageDto } from './dto/find-page.dto';
 
 @Controller('top-page')
 export class PageController {
+  constructor(private readonly configService: ConfigService) {}
+
   @Post('create')
   async create(@Body() dto: Omit<PageModel, '_id'>) {}
 

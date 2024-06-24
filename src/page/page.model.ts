@@ -1,3 +1,6 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
+
 export enum PageCategory {
   Courses,
   Services,
@@ -5,23 +8,60 @@ export enum PageCategory {
   Products,
 }
 
-export class PageModel {
-  _id: string;
-  firstCategory: PageCategory;
-  secondCategory: string;
+export class HhData {
+  @Prop()
+  count: number;
+
+  @Prop()
+  juniorSalary: number;
+
+  @Prop()
+  middleSalary: number;
+
+  @Prop()
+  seniorSalary: number;
+}
+
+export class PageAdvantage {
+  @Prop()
   title: string;
+
+  @Prop()
+  description: string;
+}
+
+@Schema({ timestamps: true })
+export class PageModel {
+  @Prop({ enum: PageCategory })
+  firstCategory: PageCategory;
+
+  @Prop({ unique: true })
+  alias: string;
+
+  @Prop()
+  secondCategory: string;
+
+  @Prop()
+  title: string;
+
+  @Prop()
   category: string;
-  hh?: {
-    count: number;
-    juniorSalary: number;
-    middleSalary: number;
-    seniorSalary: number;
-  };
-  advantages: {
-    title: string;
-    description: string;
-  }[];
+
+  @Prop({ type: () => HhData })
+  hh?: HhData;
+
+  @Prop({ type: () => [PageAdvantage] })
+  advantages: PageAdvantage[];
+
+  @Prop()
   seoText: string;
+
+  @Prop()
   tagsTitle: string;
+
+  @Prop({ type: () => [String] })
   tags: string[];
 }
+
+export type PageDocument = HydratedDocument<PageModel>;
+export const PageSchema = SchemaFactory.createForClass(PageModel);
