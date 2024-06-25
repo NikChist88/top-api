@@ -10,4 +10,4 @@ export const getMongoConfig = async (
 };
 
 const getMongoString = (configService: ConfigService) =>
-  'mongodb://127.0.0.1:27017/mongo';
+  'mongodb://admin:admin@127.0.0.1:27017/admin';
