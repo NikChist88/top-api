@@ -15,6 +15,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @UsePipes(new ValidationPipe())
+  @HttpCode(201)
   @Post('register')
   async register(@Body() dto: AuthDto) {
     const user = await this.authService.findUser(dto.login);
@@ -32,7 +33,7 @@ export class AuthController {
       dto.login,
       dto.password,
     );
-    
+
     return this.authService.login(email);
   }
 }

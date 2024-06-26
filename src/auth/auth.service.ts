@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthDto } from './dto/auth.dto';
 import { Model } from 'mongoose';
-import { UserDocument, UserModel } from './user.model';
+import { UserDocument, UserModel } from './models/user.model';
 import { InjectModel } from '@nestjs/mongoose';
 import { genSalt, hash, compare } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -20,7 +20,7 @@ export class AuthService {
       email: dto.login,
       hash: await hash(dto.password, salt),
     });
-    
+
     return newUser.save();
   }
 

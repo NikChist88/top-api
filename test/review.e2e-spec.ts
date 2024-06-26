@@ -1,11 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { Body, INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
 import * as request from 'supertest';
 import { CreateRreviewDto } from '../src/review/dto/create-review.dto';
 import { Types, disconnect } from 'mongoose';
+import { AuthDto } from 'src/auth/dto/auth.dto';
 
 const productId = new Types.ObjectId().toHexString();
+
+const loginDto: AuthDto = {
+  login: 'ssepiol@mail.com',
+  password: 'swordfish',
+};
 
 const testDto: CreateRreviewDto = {
   name: 'Test',
@@ -18,6 +24,7 @@ const testDto: CreateRreviewDto = {
 describe('ReviewService', () => {
   let app: INestApplication;
   let createdId: string;
+  let token: string;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,6 +33,12 @@ describe('ReviewService', () => {
 
     app = module.createNestApplication();
     await app.init();
+
+    const res = await request(app.getHttpServer())
+      .post('/auth/login')
+      .send(loginDto);
+
+    token = res.body.access_token;
   });
 
   it('/review/create (POST) - success', async () => {
@@ -52,6 +65,7 @@ describe('ReviewService', () => {
   it('/review/:id (DELETE) - success', () => {
     return request(app.getHttpServer())
       .delete(`/review/${createdId}`)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200);
   });
 
